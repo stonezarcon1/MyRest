@@ -2,14 +2,14 @@ package com.stonezarcon.myrest;
 
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -46,6 +46,14 @@ public class UserController {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new UserNotFoundException(userId));
         return userModelAssembler.toModel(user);
+    }
+
+    @PostMapping("/user/search")
+    public List<User> searchByLastName(@RequestBody Map<String, String> body) {
+        Set<String> userlist = new HashSet<>();
+        userlist.add(body.get("lastName"));
+
+        return userRepository.findUserByLastName(userlist);
     }
 
     @PostMapping("/user")
